@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\File;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Blog 
 {
@@ -11,34 +12,36 @@ class Blog
     public $slug;
     public $intro;
     public $body;
-    public function __construct($title,$slug,$intro,$body)
+    public $date;
+    public function __construct($title,$slug,$intro,$body,$date)
     {
         $this->title = $title;
         $this->slug = $slug;
         $this->intro = $intro;
         $this->body = $body;
+        $this->date = $date;
     }
 
     public static function all()
     {
-        $files = File::files(resource_path("blogs"));
-        return collect($files)->map(function($file){
+         return collect(File::files(resource_path("blogs")))
+            ->map(function($file){
             $obj = YamlFrontMatter::parsefile($file);
-            return new Blog($obj->title, $obj->slug, $obj->intro, $obj->body());
-        });
-        // return array_map(function($file){
-        //     $obj = YamlFrontMatter::parsefile($file);
-        //     return new Blog($obj->title, $obj->slug, $obj->intro, $obj->body());
-        // },$files);  
+            return new Blog($obj->title, $obj->slug, $obj->intro, $obj->body(),$obj->date);
+        })
+        ->sortByDesc('date'); 
     }
     public static function find($slug)
     {
-        $path = resource_path("blogs/$slug.html");
-        if (!file_exists($path)) {
-            return redirect('/');
-        }
-        return cache()->remember("posts.$slug",120, function() use ($path){
-            return file_get_contents($path);
-        });
+       $blogs = static::all();
+       return $blogs->firstWhere('slug',$slug);
+    }
+    public static function findOrFail($slug)
+    {
+       $blog =static::find($slug);
+       if (!$blog) {
+           throw new ModelNotFoundException();
+       }
+       return $blog;
     }
 }
