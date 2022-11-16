@@ -2,46 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\File;
-use Spatie\YamlFrontMatter\YamlFrontMatter;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Blog 
+class Blog extends Model
 {
-    public $title;
-    public $slug;
-    public $intro;
-    public $body;
-    public $date;
-    public function __construct($title,$slug,$intro,$body,$date)
-    {
-        $this->title = $title;
-        $this->slug = $slug;
-        $this->intro = $intro;
-        $this->body = $body;
-        $this->date = $date;
-    }
+    use HasFactory;
+    protected $guarded=['id'];
+    protected $with=['category','author'];
 
-    public static function all()
+    public function category()
     {
-         return collect(File::files(resource_path("blogs")))
-            ->map(function($file){
-            $obj = YamlFrontMatter::parsefile($file);
-            return new Blog($obj->title, $obj->slug, $obj->intro, $obj->body(),$obj->date);
-        })
-        ->sortByDesc('date'); 
+        return $this->belongsTo(Category::class);
     }
-    public static function find($slug)
+    
+    public function author()
     {
-       $blogs = static::all();
-       return $blogs->firstWhere('slug',$slug);
-    }
-    public static function findOrFail($slug)
-    {
-       $blog =static::find($slug);
-       if (!$blog) {
-           throw new ModelNotFoundException();
-       }
-       return $blog;
+        return $this->belongsTo(User::class,'user_id');
     }
 }
