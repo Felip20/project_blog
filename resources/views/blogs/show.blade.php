@@ -20,7 +20,18 @@
         </div>
       </div>
     </div>
-
+      <section class="container">
+        <div class="col-md-8 mx-auto">
+         @auth
+          <x-comment-form :blog="$blog"></x-comment-form>
+        @else
+        <p class="text-center">Please <a href="/login">Login</a> first to comment</p>
+         @endauth
+        </div>
+      </section>
+      @if ($blog->comments->count())
+        <x-comments :comments="$blog->comments"></x-comments>
+      @endif
  <x-subscribe></x-subscribe>
 <x-blog-you-may-like :rdblogs="$randomBlogs"></x-blog-you-may-like>
 </x-layout>

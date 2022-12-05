@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 /*
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 
 Route::get('/', [BlogController::class,'index']);
 Route::get('/blogs/{blog:slug}',[BlogController::class,'show']);
+Route::post('/blogs/{blog:slug}/comments',[CommentController::class,'store']);
 
 Route::get('/register', [AuthController::class,'create'])->middleware('guest');
 Route::post('/register',[AuthController::class,'store'])->middleware('guest');
