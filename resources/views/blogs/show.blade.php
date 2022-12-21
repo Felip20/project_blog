@@ -13,6 +13,22 @@
               <div>Author - {{$blog->author->name}} </div>
               <div class="badge bg-primary">{{$blog->category->name}}</div>
               <div class="text-secondary">Time-{{$blog->created_at->diffForHumans()}}</div>
+              <div class="text-secondary">
+                <form action="/blogs/{{$blog->slug}}/sub" method="POST">
+                  @csrf
+                  @auth
+                  @if (auth()->user()->isSubBlogs($blog))
+                  <button class="btn btn-danger">
+                    unsubscribe
+                  </button>
+                  @else
+                  <button class="btn btn-warning">
+                    subscribe
+                  </button>
+                  @endif
+                  @endauth
+                </form>
+              </div>
           </div>
           <p class="lh-md mt-3">
             {{$blog->title}}
@@ -30,8 +46,7 @@
         </div>
       </section>
       @if ($blog->comments->count())
-        <x-comments :comments="$blog->comments"></x-comments>
+        <x-comments :comments="$blog->comments()->latest()->paginate(3)"></x-comments>
       @endif
- <x-subscribe></x-subscribe>
 <x-blog-you-may-like :rdblogs="$randomBlogs"></x-blog-you-may-like>
 </x-layout>

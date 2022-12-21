@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\User;
 
 
 class BlogController extends Controller
 {
-    function index() {
+    function index(){
         return view('blogs.index',[
             'blogs'=>Blog::latest()
                         ->filter(request(['search','category','user']))
@@ -22,5 +23,14 @@ class BlogController extends Controller
             'blog'=>$blog,
             'randomBlogs'=>Blog::inrandomOrder()->take(3)->get()
         ]);
+    }
+    function subHandler(Blog $blog){
+        
+        if (User::find(auth()->id())->isSubBlogs($blog)) {
+            $blog->unsuber();
+        }else{
+            $blog->suber();
+        }
+        return back();
     }
 }

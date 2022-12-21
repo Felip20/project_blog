@@ -29,4 +29,5 @@ Route::post('/logout',[AuthController::class,'logout'])->middleware('auth');
 Route::get('/login',[AuthController::class,'login'])->middleware('guest');
 Route::post('/login',[AuthController::class,'post_login'])->middleware('guest');
 
+Route::post('/blogs/{blog:slug}/sub',[BlogController::class,'subHandler']);
 
