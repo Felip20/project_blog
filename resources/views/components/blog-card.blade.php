@@ -1,7 +1,7 @@
 @props(['blog'])
 <div class="card">
     <img
-      src="/images/lego.gif"
+      src='{{asset("/storage/$blog->thumbnail")}}'
       class="card-img-top"
       alt="..."
     />

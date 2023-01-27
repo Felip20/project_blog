@@ -42,7 +42,12 @@ class AuthController extends Controller
             'password.required'=>'Password must be aleast 8 characters'
         ]);
         if (auth()->attempt($formdata)) {
-            return redirect('/')->with('success','Welcome Back');
+            if (auth()->user()->is_admin) {
+                return redirect('/admin/blogs')->with('success','Welcome Back');
+            }else
+            {
+                return redirect('/')->with('success','Welcome Back');
+            }
         }
         else{
             return redirect()->back()->withErrors([
