@@ -1,6 +1,6 @@
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="/">Creative Coding</a>
+      <a class="navbar-brand" href="/">Vale Education Blog</a>
       <div class="d-flex">
         <a href="/#blogs" class="nav-link">Blogs</a>
         @auth
